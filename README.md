@@ -14,13 +14,27 @@ and build knowledge graphs.
 ---
 ## How to use it
 
+---
+
+
 
 ## Example sentence
+
+---
 
 
 ## How it works
 
+---
 
+The last layer of a transformer based language model, like BERT, outputs attention matrices for all its attention heads.
+We calcualte the average of all the matrices to operate the algorithm. If we are looking for head-tail relationships
+with tokens from left to right, we would have a matrix like the following. We disregard
+the attention scores from below the diagonal because they represent a word-to-word relationship from right to left. We
+utilize such an average of matrices for the beam-search algorithm.
+
+We assume that each attention score represent the probability of two words been related in the sentence.
+We show below an example of the beam-search input for the sentence "Joe is curious about cars".
 
 |         | Joe | is  | curious | about | cars |
 |---------|-----|-----|---------|-------|------|
@@ -30,6 +44,22 @@ and build knowledge graphs.
 | about   | X   | X   | X       | X     | 0.4  |
 | cars    | X   | X   | X       | X     | X    | 
 
+
+We utilize spaCy to determine the noun chunks and link them to form head-tail pairs. One possible
+head-tail pair for this example would be "(Joe, cars)". Taking "Joe" as the first word, we traverse
+the first line of the matrix forming candidate relationships. "is", "curious", "about" are all candidates.
+
+The beam-search only passes for its next iteration the top-k candidates, based on their average attention scores.
+If k is one, the only candidate for the second iteration is "curious" with a score of 0.4.
+
+We now traverse the third line in the matrix, looking for possible next tokens given "curious".
+"curious about" is the only possibility here because "cars" belongs to the tail chunk. "curious" about
+has a score of `(0.4+0.4)/2=0.4`.
+
+The relationship we found for the head-tail pair "(Joe, cars)" is "curious about", so the triplet
+looks like `(Joe, curious about, cars)`.
+
+In a later stage, we remove prepositions for the relations and uncapitalize, so the final triplet is `(joe, curious, cars)`.
 
 ## Constructor parameters
 
