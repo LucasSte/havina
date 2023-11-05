@@ -128,6 +128,8 @@ class Sentence:
             if len(new_ids) == 1:
                 doc_id = new_ids[0]
                 references = self.doc._.coref_chains.resolve(self.doc[doc_id])
+                if self.doc[doc_id].text == 'who':
+                    print(f"who: '{references}'")
                 if references is not None and (
                         self.doc[doc_id].pos_ == 'PRON' or self.doc[doc_id].pos_ == 'NOUN'):
                     resolution = references[0].text.lower()
@@ -200,7 +202,7 @@ class SearchBeam:
         self.visited = [initial_id]
         self.rel_tokens = []
 
-    def add(self, token_id, score,):
+    def add(self, token_id, score):
         self.last_token = token_id
         self.visited.append(token_id)
         self.score += score
@@ -208,6 +210,9 @@ class SearchBeam:
 
     def has_relation(self) -> bool:
         return len(self.rel_tokens) > 0
+
+    def finalize(self, score):
+        self.score += score
 
     def mean_score(self) -> float:
         if len(self.rel_tokens) == 0:
@@ -241,7 +246,7 @@ def search_pass(attention_matrix, ht_pair: HtPair, k: int, contiguous: bool, len
         attention_scores = attention_matrix[:, item.last_token]
         for i in range(1, len(attention_scores)-1):
             next_path = tuple(item.visited + [i])
-            if can_add(i, ht_pair, candidate_facts, item) and next_path not in visited:
+            if can_add(i, ht_pair, candidate_facts, item, attention_scores[i].detach()) and next_path not in visited:
                 beams.append(
                     copy.deepcopy(item)
                 )
@@ -254,9 +259,10 @@ def search_pass(attention_matrix, ht_pair: HtPair, k: int, contiguous: bool, len
     return candidate_facts
 
 
-def can_add(token_id, pair: HtPair, candidates: list[SearchBeam], item: SearchBeam) -> bool:
+def can_add(token_id, pair: HtPair, candidates: list[SearchBeam], item: SearchBeam, score: float) -> bool:
     if pair.tail.token_start_idx <= token_id <= pair.tail.token_end_idx:
         if item.has_relation():
+            item.finalize(score)
             candidates.append(item)
             return False
 

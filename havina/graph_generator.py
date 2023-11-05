@@ -15,7 +15,7 @@ class GraphGenerator:
             link_entity=False,
             model='bert',
             contiguous_token=True,
-            forward_relations=False,
+            forward_relations=True,
             frequency=1,
             relation_length=8,
             resolve_reference=True,
@@ -49,7 +49,7 @@ class GraphGenerator:
         self.device = device
         self.resolve_reference = resolve_reference
 
-    def __call__(self, sentence: str, workers: int) -> list[fs.HeadTailRelations]:
+    def __call__(self, sentence: str, workers=1) -> list[fs.HeadTailRelations]:
         """
         Processes an input sentence and returns a list of head and tails and their corresponding relations.
 

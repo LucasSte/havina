@@ -76,6 +76,8 @@ class EntityFindingTest(unittest.TestCase):
         self.assertTrue(beam.has_relation())
         self.assertEqual(beam.mean_score(), 4)
         self.assertEqual(ef.sort_beam(beam), 4)
+        beam.finalize(10)
+        self.assertEqual(beam.score, 18)
 
     def test_can_add(self):
         text = "Rihanna is a famous singer. She sings perfectly."

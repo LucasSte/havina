@@ -11,12 +11,43 @@ do not carry any relevant meaning.
 It can be used to evaluate the language comprehension of AI models or as a tool to extract triplets from text 
 and build knowledge graphs.
 
----
 ## How to use it
 
 ---
 
+After importing the `GraphGenerator` class from havina, simply call the object
+with the sentence to evaluate and an optional number of workers. Each worker will span
+a different process and the algorithm will run in parallel between them.
 
+For more information about the constructor parameters, check the (put a ref here!)
+Constructor parameters section.
+
+```python
+from havina.graph_generator import GraphGenerator
+
+text = 'John Lennon is a famous singer.'
+generator = GraphGenerator(
+    top_k=4,
+    contiguous_token=False
+)
+
+triplets = generator(text)
+print(triplets)
+```
+
+The code above will print the following:
+```
+[
+    HeadTailRelations(
+        head=Entity(text='john lennon', wikidata_id=None), 
+        tail=Entity(text='a famous singer', wikidata_id=None), 
+        relations=['be'])
+]
+```
+
+The returned type is a list of `HeadTailReations` objects, each of which contains
+the head and tail entities and the possible relations between them. Relations are
+Python strings.
 
 ## Example sentence
 
@@ -28,7 +59,7 @@ and build knowledge graphs.
 ---
 
 The last layer of a transformer based language model, like BERT, outputs attention matrices for all its attention heads.
-We calcualte the average of all the matrices to operate the algorithm. If we are looking for head-tail relationships
+We calculate the average of all the matrices to operate the algorithm. If we are looking for head-tail relationships
 with tokens from left to right, we would have a matrix like the following. We disregard
 the attention scores from below the diagonal because they represent a word-to-word relationship from right to left. We
 utilize such an average of matrices for the beam-search algorithm.
