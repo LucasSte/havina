@@ -1,8 +1,8 @@
 from havina.graph_generator import GraphGenerator
 
 # TODO:
-# 1. Why who and which are not resolved?
-# 3. Allow only substantives in relation?
+# 1. Why who and which are not resolved? No, but the algorithm is smart enough to handle this case
+# 3. Allow only substantives in relation? Yes
 text = ("Stanford University was founded in 1885 by Leland Stanford—a railroad magnate who served as the eighth "
         "governor of and then-incumbent senator from California—and his wife, Jane, in memory of their only child, "
         "Leland Stanford Jr., who had died of typhoid fever aged 15 the previous year. The university admitted its "
