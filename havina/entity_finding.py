@@ -192,6 +192,13 @@ def should_include(head: NounChunk, tail: NounChunk, sentence: Sentence, link_en
     if link_entity and (head.wikidata_id is None or tail.wikidata_id is None):
         return False
 
+    # FIXME: spaCy's reference resolution does not find the anaphoric antecedent of 'that', 'who' and 'which'.
+    # The algorithm, though, is clever enough to find the proper relationships between the antecendent and other
+    # noun chunks.
+    unresolved_anaphoras = {'who', 'which', 'that'}
+    if head.text.lower() in unresolved_anaphoras or tail.text.lower() in unresolved_anaphoras:
+        return False
+
     return True
 
 
