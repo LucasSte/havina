@@ -41,9 +41,9 @@ for item in relations:
 
 
 kg_df = pd.DataFrame({'source': source, 'target': target, 'edge': relation})
-G = nx.from_pandas_edgelist(kg_df, 'source', 'target', edge_attr=True, create_using=nx.MultiDiGraph)
+G = nx.from_pandas_edgelist(kg_df, 'source', 'target', edge_attr=True, create_using=nx.MultiGraph)
 plt.figure(figsize=(12, 12))
-pos = nx.shell_layout(G)
+pos = nx.planar_layout(G)
 nx.draw(G, with_labels=True, node_color='skyblue', edge_cmap=plt.cm.Blues, pos=pos)
 nx.draw_networkx_edge_labels(G, pos=pos)
 plt.show()

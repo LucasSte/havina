@@ -17,7 +17,7 @@ and build knowledge graphs.
 
 After importing the `GraphGenerator` class from havina, simply call the object
 with the sentence to evaluate and an optional number of workers. Each worker will span
-a different process and the algorithm will run in parallel between them.
+a different process and the algorithm will split the work between them.
 
 For more information about the constructor parameters, check the (put a ref here!)
 Constructor parameters section.
@@ -31,7 +31,7 @@ generator = GraphGenerator(
     contiguous_token=False
 )
 
-triplets = generator(text)
+triplets = generator(text, workers=1)
 print(triplets)
 ```
 
@@ -53,6 +53,22 @@ Python strings.
 
 ---
 
+Grabbing the following paragraph from [Wikipedia](https://en.wikipedia.org/wiki/Amsterdam) and using the library as in `example.py`,
+we have the following graph. It contains only the relations for the `amsterdam` and the
+`the netherlands` nodes to avoid cluttering the image.
+
+> Amsterdam was founded at the mouth of the Amstel River that was dammed to control flooding; the city's name 
+> derives from a local linguistic variation of the word dam. Originally a small fishing village in the late 12th 
+> century, Amsterdam became a major world port during the Dutch Golden Age of the 17th century, when the Netherlands 
+> was an economic powerhouse. Amsterdam was the leading centre for finance and trade, as well as a hub of 
+> production of secular art. In the 19th and 20th centuries, the city expanded and many new neighborhoods and 
+> suburbs were planned and built. The canals of Amsterdam and the 19-20th century Defence Line of Amsterdam are both 
+> on the UNESCO World Heritage List. Sloten, annexed in 1921 by the municipality of Amsterdam, is the oldest part of 
+> the city, dating to the 9th century. The city has a long tradition of openness, liberalism, and tolerance. Cycling 
+> is key to the city's modern character, and there are numerous biking paths and lanes spread throughout 
+> the entire city.
+
+![alt text](example_graph.png "Example")
 
 ## How it works
 
@@ -92,7 +108,20 @@ looks like `(Joe, curious about, cars)`.
 
 In a later stage, we remove prepositions for the relations and uncapitalize, so the final triplet is `(joe, curious, cars)`.
 
+
 ## Constructor parameters
+
+---
+
+The `GraphGenerator` has many parameters that change the algorithm's behavior. Check the table below to understand
+how each of them may affect the results.
+
+
+| Parameter name | Effect on results | Default value |
+|----------------|-------------------|---------------|
+| top_k          |                   |               |
+|                |                   |               |
+
 
 
 ## Roadmap

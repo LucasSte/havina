@@ -54,6 +54,7 @@ class GraphGenerator:
         Processes an input sentence and returns a list of head and tails and their corresponding relations.
 
         :param sentence: A string to be processed
+        :param workers: The number of processes to create for splitting the work
         :return: A list of head and tails entities and their corresponding relations
         """
 
