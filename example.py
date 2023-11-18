@@ -15,7 +15,7 @@ text = ("Amsterdam was founded at the mouth of the Amstel River that was dammed 
         "1921 by the municipality of Amsterdam, is the oldest part of the city, dating to the 9th century. The city "
         "has a long tradition of openness, liberalism, and tolerance. Cycling is key to the city's modern character,"
         " and there are numerous biking paths and lanes spread throughout the entire city.")
-generator = GraphGenerator(device='mps', forward_relations=True, link_entity=False, top_k=6, contiguous_token=True,
+generator = GraphGenerator(device='mps', forward_tokens=True, link_entity=False, top_k=6, contiguous_token=True,
                            relation_length=4, threshold=0.05)
 
 relations = generator(text, 4)  # 36, 62, 61

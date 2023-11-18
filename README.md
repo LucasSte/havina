@@ -19,8 +19,8 @@ After importing the `GraphGenerator` class from havina, simply call the object
 with the sentence to evaluate and an optional number of workers. Each worker will span
 a different process and the algorithm will split the work between them.
 
-For more information about the constructor parameters, check the (put a ref here!)
-Constructor parameters section.
+For more information about the constructor parameters, check the 
+[Constructor parameters section](#constructor-parameters).
 
 ```python
 from havina.graph_generator import GraphGenerator
@@ -53,7 +53,7 @@ Python strings.
 
 ---
 
-Grabbing the following paragraph from [Wikipedia](https://en.wikipedia.org/wiki/Amsterdam) and using the library as in `example.py`,
+Grabbing the following paragraph from [Wikipedia](https://en.wikipedia.org/wiki/Amsterdam) and using the library as in [example.py](example.py),
 we have the following graph. It contains only the relations for the `amsterdam` and the
 `the netherlands` nodes to avoid cluttering the image.
 
@@ -117,10 +117,18 @@ The `GraphGenerator` has many parameters that change the algorithm's behavior. C
 how each of them may affect the results.
 
 
-| Parameter name | Effect on results | Default value |
-|----------------|-------------------|---------------|
-| top_k          |                   |               |
-|                |                   |               |
+| Parameter name      | Effect on results                                                                                                                                                                                                                              | Default value |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| `top_k`             | Determines the number of candidates for the next iteration of beam search. A larger number improves the quality of relations, but takes longer to run.                                                                                         | 2             |
+| `threshold`         | Sets the score limit for the algorithm to eliminate low quality relations. A higher threshold returns less results, but of better quality.                                                                                                     | 0.015         |
+| `link_entity`       | Whether to link nouns to Wikidata entities. If set to true, the algorithm will only find relations for nouns linked to an entity. Setting to false will increase the number of results.                                                        | `False`       |
+| `model`             | Language model to use. Currently, only BERT is supported.                                                                                                                                                                                      | `bert`        |
+| `contiguous_tokens` | Whether the relation tokens will be adjacent in the original sentence. If set to `True`, `(Joe, considers a friend, Anne)` will not be a triplet for "Joe considers Anne a friend", because the tokens are not adjacent.                       | `True`        |
+| `forward_tokens`    | Whether the relation tokens can follow only a right-to-left order. If set to `False`, `(Joe, nice friend, Anne)` will be a potential relation for "Joe finds Anne nice and is friends with her." Note that `nice` is on the left of `friends`. | `True`        |
+| `frequency`         | How many times a relation should appear in the text corpus not to be eliminated by the algorithm.                                                                                                                                              | 1             |
+| `relation_length`   | How long the relation can be. If the number is higher, better results may arise, but the algorithm will take more time to converge.                                                                                                            | 8             |
+| `resolve_reference` | Resolve noun and pronoun references. For example, replace "he" and "she" from the triple head or tail by the noun they refer to.                                                                                                               | `True`        |
+| `device`            | PyTorch device to execute the language model. If set to `None`, the model is executed on CPU.                                                                                                                                                  | `None`        |
 
 
 
