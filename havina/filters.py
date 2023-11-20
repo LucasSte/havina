@@ -75,7 +75,7 @@ class IndividualFilter:
         # Another option would be including 'AUX'
         remove_morpho = {'ADJ', 'ADV', 'SYM', 'OTHER', 'PUNCT',
                          'NUM', 'INTJ', 'DET', 'ADP', 'PRON',
-                         'CONJ', 'CCONJ', 'SCONJ'}
+                         'CONJ', 'CCONJ', 'SCONJ', 'PART'}
         last_word = ' '
         for item_idx in indexes:
             if not self.doc[item_idx].pos_ in remove_morpho:

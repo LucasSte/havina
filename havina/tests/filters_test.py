@@ -51,7 +51,12 @@ class FiltersTest(unittest.TestCase):
         for pair in ht_pairs:
             candidates = ef.search_pass(attention, pair, 6, False, 4)
             rels.append(test_filter.filter(candidates, pair))
-        expected = [ff.HeadTailRelations(head=ff.Entity(text='alice', wikidata_id=None), tail=ff.Entity(text='john', wikidata_id=None), relations=['consider', 'friend', 'friend', 'friend']), ff.HeadTailRelations(head=ff.Entity(text='john', wikidata_id=None), tail=ff.Entity(text='alice', wikidata_id=None), relations=['friend', 'consider', 'friend', 'friend', 'friend'])]
+        expected = [ff.HeadTailRelations(head=ff.Entity(text='alice', wikidata_id=None),
+                                         tail=ff.Entity(text='john', wikidata_id=None),
+                                         relations=['consider', 'friend', 'friend', 'friend', 'friend']),
+                    ff.HeadTailRelations(head=ff.Entity(text='john', wikidata_id=None),
+                                         tail=ff.Entity(text='alice', wikidata_id=None),
+                                         relations=['friend', 'consider', 'friend', 'friend', 'friend'])]
         self.assertEqual(expected, rels)
 
     def test_lemmatize(self):

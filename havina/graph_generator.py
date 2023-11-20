@@ -10,12 +10,12 @@ import os
 class GraphGenerator:
     def __init__(
             self,
-            top_k=2,
+            top_k=4,
             threshold=0.015,
             link_entity=False,
             model='bert',
             contiguous_token=True,
-            forward_relations=False,
+            forward_tokens=True,
             frequency=1,
             relation_length=8,
             resolve_reference=True,
@@ -27,7 +27,7 @@ class GraphGenerator:
         :param link_entity: Link head and tail entities using Wikidata database
         :param model: Language model to extract attention scores from
         :param contiguous_token: When generating relations, consider only those with contiguous tokens
-        :param forward_relations: When filtering relations, remove those whose order of words do not follow that of the
+        :param forward_tokens: When filtering relations, remove those whose order of words do not follow that of the
         text. (i.e. if the input is 'I love beautiful cars', a relation like 'beautiful love' would be removed)
         :param frequency: The frequency cutoff. If a relation appears less than 'frequency' in the text corpus, it
         will not be accounted.
@@ -43,17 +43,18 @@ class GraphGenerator:
         self.link_entity = link_entity
         self.model = model
         self.contiguous_token = contiguous_token
-        self.forward_relations = forward_relations
+        self.forward_tokens = forward_tokens
         self.frequency = frequency
         self.relation_length = relation_length
         self.device = device
         self.resolve_reference = resolve_reference
 
-    def __call__(self, sentence: str, workers: int) -> list[fs.HeadTailRelations]:
+    def __call__(self, sentence: str, workers=1) -> list[fs.HeadTailRelations]:
         """
         Processes an input sentence and returns a list of head and tails and their corresponding relations.
 
         :param sentence: A string to be processed
+        :param workers: The number of processes to create for splitting the work
         :return: A list of head and tails entities and their corresponding relations
         """
 
@@ -63,7 +64,7 @@ class GraphGenerator:
         self.attention = model.inference_attention(model_input).to('cpu').detach()
 
         ht_pairs = ef.create_ht_pairs(noun_chunks, processed_sentence, self.link_entity)
-        self.ind_filter = fs.IndividualFilter(processed_sentence, self.forward_relations, self.threshold)
+        self.ind_filter = fs.IndividualFilter(processed_sentence, self.forward_tokens, self.threshold)
 
         relations: list[fs.HeadTailRelations] = []
         if workers <= 0:
