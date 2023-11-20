@@ -10,7 +10,7 @@ import os
 class GraphGenerator:
     def __init__(
             self,
-            top_k=2,
+            top_k=4,
             threshold=0.015,
             link_entity=False,
             model='bert',
