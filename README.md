@@ -13,7 +13,6 @@ and build knowledge graphs.
 
 ## How to use it
 
----
 
 After importing the `GraphGenerator` class from havina, simply call the object
 with the sentence to evaluate and an optional number of workers. Each worker will span
@@ -51,7 +50,6 @@ Python strings.
 
 ## Example sentence
 
----
 
 Grabbing the following paragraph from [Wikipedia](https://en.wikipedia.org/wiki/Amsterdam) and using the library as in [example.py](example.py),
 we have the graph depicted below. It contains only the relations for the `amsterdam` and the
@@ -71,8 +69,6 @@ we have the graph depicted below. It contains only the relations for the `amster
 ![alt text](example_graph.png "Example")
 
 ## How it works
-
----
 
 The last layer of a transformer based language model, like BERT, outputs attention matrices for all its attention heads.
 We calculate the average of all the matrices to operate the algorithm. If we are looking for head-tail relationships
@@ -111,7 +107,6 @@ In a later stage, we remove prepositions for the relations and uncapitalize, so 
 
 ## Constructor parameters
 
----
 
 The `GraphGenerator` has many parameters that change the algorithm's behavior. Use table below to understand
 how each of them may affect the results.
@@ -137,7 +132,7 @@ how each of them may affect the results.
 TODOS:
 
 1. Add a short description on Github and tags.
-2. Publish library on PIP
+2. Publish library on PIP. Update README accordingly.
 3. Add language models other than BERT and instructions for other users to user their own models.
 4. Use spaCy sentencizer to segment large documents into sentences
 
