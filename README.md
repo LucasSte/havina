@@ -131,8 +131,7 @@ how each of them may affect the results.
 
 TODOS:
 
-1. Add a short description on Github and tags.
-2. Publish library on PIP. Update README accordingly.
-3. Add language models other than BERT and instructions for other users to user their own models.
-4. Use spaCy sentencizer to segment large documents into sentences
+1. Publish library on PIP. Update README accordingly.
+2. Add language models other than BERT and instructions for other users to user their own models.
+3. Use spaCy sentencizer to segment large documents into sentences
 
