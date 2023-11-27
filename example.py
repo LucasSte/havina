@@ -1,8 +1,7 @@
-from havina.graph_generator import GraphGenerator
+from havina import GraphGenerator
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
-import random
 
 # source: https://en.wikipedia.org/wiki/Amsterdam
 text = ("Amsterdam was founded at the mouth of the Amstel River that was dammed to control flooding; "

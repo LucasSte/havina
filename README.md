@@ -22,7 +22,7 @@ For more information about the constructor parameters, check the
 [Constructor parameters section](#constructor-parameters).
 
 ```python
-from havina.graph_generator import GraphGenerator
+from havina import GraphGenerator
 
 text = 'John Lennon is a famous singer.'
 generator = GraphGenerator(
