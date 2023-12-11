@@ -1,15 +1,20 @@
-# https://www.serviceobjects.com/blog/step-by-step-guide-to-publishing-python-libraries-to-pypi/
-# TODO: Dependencies
-[proejct]
+# TODO: Spacy model?
+[project]
 name = "Havina"
 version = "0.1"
 authors = [
     { name = "Lucas Steuernagel", email = "lucas.ste@proton.me" },
 ]
+dependencies = [
+    "spacy",
+    "torch",
+    "transformers",
+    "build"
+]
 
 description = "Havina is a Python library that can generate knowledge graphs triplets from an input text. Its implementation is based on the paper \"Language models are open knowledge graphs\" with some tweaks to improve performance. Havina can be used to evaluate the language comprehension of AI models or as a tool to extract triplets from text and build knowledge graphs."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = "MIT"
 
 [project.urls]
