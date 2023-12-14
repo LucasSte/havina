@@ -74,7 +74,10 @@ class GraphGenerator:
                 relations.append(self.worker(item))
         else:
             os.environ['TOKENIZERS_PARALLELISM'] = 'true'
-            multiprocessing.set_start_method('fork')
+            try:
+                multiprocessing.set_start_method('fork')
+            except RuntimeError:
+                pass
             with Pool(workers) as p:
                 for item in p.imap_unordered(self.worker, ht_pairs):
                     relations.append(item)
