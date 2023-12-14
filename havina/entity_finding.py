@@ -1,3 +1,4 @@
+import coreferee.errors
 import spacy
 from dataclasses import dataclass
 import copy
@@ -17,8 +18,23 @@ class NounChunk:
 
 class Sentence:
     def __init__(self, text: str, model: lm.LanguageModel, link_entities: bool, resolve_references: bool):
-        nlp_tool = spacy.load('en_core_web_trf')
-        nlp_tool.add_pipe('coreferee')
+        try:
+            spacy.load('en_core_web_lg')
+            nlp_tool = spacy.load('en_core_web_trf')
+        except OSError:
+            from spacy.cli import download
+            download('en_core_web_trf')
+            download('en_core_web_lg')
+            nlp_tool = spacy.load('en_core_web_trf')
+
+        try:
+            nlp_tool.add_pipe('coreferee')
+        except coreferee.errors.ModelNotSupportedError:
+            import subprocess
+            import sys
+            subprocess.check_call([sys.executable, '-m', 'coreferee', 'install', 'en'])
+            nlp_tool.add_pipe('coreferee')
+
         # It is not possible to serialize the entity linker for multiprocessing, so I need to run Spacy twice
         self.doc = nlp_tool(text)
         entity_tool = spacy.load('en_core_web_trf')

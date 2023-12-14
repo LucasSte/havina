@@ -6,9 +6,12 @@ authors = [
     { name = "Lucas Steuernagel", email = "lucas.ste@proton.me" },
 ]
 dependencies = [
-    "spacy",
     "torch",
-    "transformers",
+    "transformers==4.30.2",
+    "spacy",
+    "spacy-transformers",
+    "spacy-entity-linker",
+    "coreferee",
     "build"
 ]
 
