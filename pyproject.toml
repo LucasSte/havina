@@ -1,7 +1,6 @@
-# TODO: Spacy model?
 [project]
 name = "Havina"
-version = "0.1"
+version = "0.1.2"
 authors = [
     { name = "Lucas Steuernagel", email = "lucas.ste@proton.me" },
 ]
