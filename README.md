@@ -13,16 +13,15 @@ and build knowledge graphs.
 
 ## How to use it
 
-
-After importing the `GraphGenerator` class from havina, simply call the object
-with the sentence to evaluate and an optional number of workers. Each worker will span
-a different process and the algorithm will split the work between them.
+Run `pip install havina` to install the library. Then, after importing the `GraphGenerator` class 
+from havina, simply call the object with the sentence to evaluate and an optional number of workers. 
+Each worker will span a different process and the algorithm will split the work between them.
 
 For more information about the constructor parameters, check the 
 [Constructor parameters section](#constructor-parameters).
 
 ```python
-from havina.graph_generator import GraphGenerator
+from havina import GraphGenerator
 
 text = 'John Lennon is a famous singer.'
 generator = GraphGenerator(
@@ -131,7 +130,6 @@ how each of them may affect the results.
 
 TODOS:
 
-1. Publish library on PIP. Update README accordingly.
-2. Add language models other than BERT and instructions for other users to user their own models.
-3. Use spaCy sentencizer to segment large documents into sentences
+1. Add language models other than BERT and instructions for other users to user their own models.
+2. Use spaCy sentencizer to segment large documents into sentences
 
