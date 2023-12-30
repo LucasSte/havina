@@ -247,7 +247,7 @@ def sort_beam(e: SearchBeam) -> float:
     return e.mean_score()
 
 
-def search_pass(attention_matrix, ht_pair: HtPair, k: int, contiguous: bool, length: int) -> list[SearchBeam]:
+def search_pass(attention_matrix, ht_pair: HtPair, k: int, contiguous: bool, length: int, start_tokens: int) -> list[SearchBeam]:
     queue = [
         SearchBeam(ht_pair.head.token_start_idx)
     ]
@@ -267,7 +267,7 @@ def search_pass(attention_matrix, ht_pair: HtPair, k: int, contiguous: bool, len
 
         beams = []
         attention_scores = attention_matrix[:, item.last_token]
-        for i in range(1, len(attention_scores)-1):
+        for i in range(start_tokens, len(attention_scores)-1):
             next_path = tuple(item.visited + [i])
             if can_add(i, ht_pair, candidate_facts, item, attention_scores[i].detach()) and next_path not in visited:
                 beams.append(

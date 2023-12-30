@@ -1,5 +1,6 @@
 import torch
 import transformers
+from transformers import AutoTokenizer
 
 
 class LanguageModel:
@@ -59,8 +60,44 @@ class BertModel(LanguageModel):
         return mean[0]
 
 
+class Llama2Model(LanguageModel):
+    def __init__(self, device):
+        super().__init__(device)
+        self.tokenizer = AutoTokenizer.from_pretrained('EleutherAI/gpt-neox-20b')
+        self.model = transformers.AutoModelForCausalLM.from_pretrained(
+            'mosaicml/mpt-7b',
+            trust_remote_code=True)
+
+    def init_token_idx_2_word_doc_idx(self) -> list[tuple[str, int]]:
+        return []
+
+    def num_start_tokens(self) -> int:
+        return 0
+
+    def append_last_token(self, listing: list[tuple[str, int]]):
+        pass
+
+    def model_input(self, tokenized_sequence: list[int]) -> dict[str, torch.Tensor]:
+        input_dict = {
+            'input_ids': torch.tensor(tokenized_sequence, device=self.device).long().unsqueeze(0),
+            'attention_mask': torch.ones(len(tokenized_sequence), device=self.device).long().unsqueeze(0)
+        }
+        return input_dict
+
+    def tokenize(self, word: str):
+        return self.tokenizer(str(word), add_special_tokens=False)['input_ids']
+
+    def inference_attention(self, model_input: dict[str, torch.Tensor]):
+        output = self.model(**model_input, output_attentions=True)
+        last_att_layer = output.attentions[-1]
+        mean = torch.mean(last_att_layer, dim=1)
+        return mean[0]
+
+
 def get_model(model: str, device) -> LanguageModel:
     if model == 'bert':
         return BertModel(device)
+    elif model == 'llama2':
+        return Llama2Model(device)
 
     raise Exception("Model not found")
