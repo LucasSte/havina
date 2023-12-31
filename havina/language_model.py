@@ -4,25 +4,58 @@ from transformers import AutoTokenizer
 
 
 class LanguageModel:
+    """
+    One can derive this class in order to use another language model with Havina. Currently, two models are supported
+    BERT and LLAMA2 (MPT-7B).
+    """
     def __init__(self, device):
         self.device = device
 
     def init_token_idx_2_word_doc_idx(self) -> list[tuple[str, int]]:
+        """
+        This functions initializes a dictionary from token index to spacy doc index. It should contains only the
+        first token in a tokenized sentence, alongside its corresponding doc index in the sentence.
+        For BERT, this is ('CLS', -1). We use -1 because the CLS does not correspond to a word in the sentence.
+        :return: A list with the first tokenized item and its doc index.
+        """
         pass
 
     def num_start_tokens(self) -> int:
+        """
+        This function returns the number of start tokens in a tokenized sentence.
+        :return: Integer, representing the number of start tokens.
+        """
         pass
 
     def append_last_token(self, listing: list[tuple[str, int]]):
+        """
+        Appends the last token of a tokenized sentence. In the case of BERT, this is only
+        ('SEP', len(linsting)), as 'SEP' indicates the end of the sentence.
+        :param listing: List of tokenized words and their corresponding Spacy doc index.
+        """
         pass
 
     def model_input(self, tokenized_sequence: list[int]) -> dict[str, torch.Tensor]:
+        """
+        This function prepares the model input. It should correspond to the exact dictionary the models expects.
+        :param tokenized_sequence: The sentence Havina has tokenized.
+        :return: The dictionary the language model expects as inputs.
+        """
         pass
 
     def tokenize(self, word: str):
+        """
+        Tokenize a word using the model's specific tokenizer.
+        :param word: A word to tokenize.
+        """
         pass
 
     def inference_attention(self, model_input: dict[str, torch.Tensor]):
+        """
+        Perform the inference and return the average of all the attention matrices in the model's last layer.
+        :param model_input: The language model's input.
+        :return:
+        """
         pass
 
 

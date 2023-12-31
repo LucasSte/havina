@@ -11,7 +11,8 @@ dependencies = [
     "spacy-transformers",
     "spacy-entity-linker",
     "coreferee",
-    "build"
+    "build",
+    "einops"
 ]
 
 description = "Havina is a Python library that can generate knowledge graphs triplets from an input text. Its implementation is based on the paper \"Language models are open knowledge graphs\" with some tweaks to improve performance. Havina can be used to evaluate the language comprehension of AI models or as a tool to extract triplets from text and build knowledge graphs."

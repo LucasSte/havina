@@ -104,6 +104,23 @@ In a later stage, we remove prepositions for the relations and uncapitalize, so 
 `(joe, curious, cars)`.
 
 
+## Using other language models
+
+Havina can be a tool for evaluating the text understanding of language models. As it finds the relationship between
+words from the attention matrices, checking the resulting triples indicates whether the model is learning correct
+parameters.
+
+The easiest way to use the library with another language model is to derive the `LanguageModel` class for it, as
+the examples in [language_model.py](havina/language_model.py).
+
+```python
+from havina import LanguageModel
+
+class MyModel(LanguageModel):
+    # Implement the functions here
+    pass
+```
+
 ## Constructor parameters
 
 
@@ -116,7 +133,7 @@ how each of them may affect the results.
 | `top_k`             | Determines the number of candidates for the next iteration of beam search. A larger number improves the quality of relations, but takes longer to run.                                                                                   | 4             |
 | `threshold`         | Sets the score limit for the algorithm to eliminate low quality relations. A higher threshold returns less results, but of better quality.                                                                                               | 0.015         |
 | `link_entity`       | Whether to link nouns to Wikidata entities. If set to true, the algorithm will only find relations for nouns linked to an entity. Setting to false will increase the number of results.                                                  | `False`       |
-| `model`             | Language model to use. Currently, only BERT is supported.                                                                                                                                                                                | `bert`        |
+| `model`             | Language model to use. Currently, BERT and Llama2 (MPT-7B) are supported.                                                                                                                                                                | `bert`        |
 | `contiguous_tokens` | Whether the relation tokens will be adjacent in the original sentence. If set to `True`, `(Joe, considers a friend, Anne)` will not be a triplet for "Joe considers Anne a friend", because the relation tokens are not adjacent.        | `True`        |
 | `forward_tokens`    | Whether the relation tokens can follow only a right-to-left order. If set to `False`, `(Joe, nice friend, Anne)` will be a potential relation for "Joe finds Anne nice and is her friend." Note that `nice` is on the left of `friends`. | `True`        |
 | `frequency`         | How many times a relation should appear in the text corpus not to be eliminated by the algorithm.                                                                                                                                        | 1             |
@@ -130,6 +147,5 @@ how each of them may affect the results.
 
 TODOS:
 
-1. Add language models other than BERT and instructions for other users to user their own models.
-2. Use spaCy sentencizer to segment large documents into sentences
+1. Use spaCy sentencizer to segment large documents into sentences
 
