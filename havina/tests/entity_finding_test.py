@@ -112,10 +112,10 @@ class EntityFindingTest(unittest.TestCase):
         model_input, noun_chunks = sentence_test.prepare()
         attention = model.inference_attention(model_input).to('cpu').detach()
         ht_pairs = ef.create_ht_pairs(noun_chunks, sentence_test, False)
-        candidates = ef.search_pass(attention, ht_pairs[0], 4, False, 2)
+        candidates = ef.search_pass(attention, ht_pairs[0], 4, False, 2, 1)
         for item in candidates:
             self.assertTrue(len(item.rel_tokens) <= 2)
-        candidates = ef.search_pass(attention, ht_pairs[0], 4, True, 4)
+        candidates = ef.search_pass(attention, ht_pairs[0], 4, True, 4, 1)
         for item in candidates:
             for i in range(1, len(item.rel_tokens)):
                 self.assertTrue(abs(item.rel_tokens[i-1] - item.rel_tokens[i]) == 1)
@@ -130,7 +130,7 @@ class EntityFindingTest(unittest.TestCase):
 
         rels = []
         for pair in ht_pairs:
-            candidates = ef.search_pass(attention, pair, 4, False, 3)
+            candidates = ef.search_pass(attention, pair, 4, False, 3, 1)
             for item in candidates:
                 txt = ''
                 for token_id in item.rel_tokens:

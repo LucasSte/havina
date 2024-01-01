@@ -49,7 +49,7 @@ class FiltersTest(unittest.TestCase):
         test_filter = ff.IndividualFilter(sentence_test, True, 0.015)
         rels = []
         for pair in ht_pairs:
-            candidates = ef.search_pass(attention, pair, 6, False, 4)
+            candidates = ef.search_pass(attention, pair, 6, False, 4, 1)
             rels.append(test_filter.filter(candidates, pair))
         expected = [ff.HeadTailRelations(head=ff.Entity(text='alice', wikidata_id=None),
                                          tail=ff.Entity(text='john', wikidata_id=None),

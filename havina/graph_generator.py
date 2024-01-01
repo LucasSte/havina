@@ -67,6 +67,7 @@ class GraphGenerator:
         self.ind_filter = fs.IndividualFilter(processed_sentence, self.forward_tokens, self.threshold)
 
         relations: list[fs.HeadTailRelations] = []
+        self.start_tokens = model.num_start_tokens()
         if workers <= 0:
             raise Exception('Invalid number of workers')
         elif workers == 1:
@@ -91,7 +92,7 @@ class GraphGenerator:
         return clean_relations(relations)
 
     def worker(self, pair: ef.HtPair) -> fs.HeadTailRelations:
-        candidates = ef.search_pass(self.attention, pair, self.top_k, self.contiguous_token, self.relation_length)
+        candidates = ef.search_pass(self.attention, pair, self.top_k, self.contiguous_token, self.relation_length, self.start_tokens)
         return self.ind_filter.filter(candidates, pair)
 
 
