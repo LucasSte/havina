@@ -13,7 +13,7 @@ class LanguageModel:
 
     def init_token_idx_2_word_doc_idx(self) -> list[tuple[str, int]]:
         """
-        This functions initializes a dictionary from token index to spacy doc index. It should contains only the
+        This function initializes a dictionary of token index to spacy doc index. It should contain only the
         first token in a tokenized sentence, alongside its corresponding doc index in the sentence.
         For BERT, this is ('CLS', -1). We use -1 because the CLS does not correspond to a word in the sentence.
         :return: A list with the first tokenized item and its doc index.
@@ -37,7 +37,7 @@ class LanguageModel:
 
     def model_input(self, tokenized_sequence: list[int]) -> dict[str, torch.Tensor]:
         """
-        This function prepares the model input. It should correspond to the exact dictionary the models expects.
+        This function prepares the model input. It should correspond to the exact dictionary the model expects.
         :param tokenized_sequence: The sentence Havina has tokenized.
         :return: The dictionary the language model expects as inputs.
         """

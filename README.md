@@ -107,7 +107,7 @@ In a later stage, we remove prepositions for the relations and uncapitalize, so 
 ## Using other language models
 
 Havina can be a tool for evaluating the text understanding of language models. As it finds the relationship between
-words from the attention matrices, checking the resulting triples indicates whether the model is learning correct
+words from the attention matrices, checking the resulting triplets indicates whether the model is learning correct
 parameters.
 
 The easiest way to use the library with another language model is to derive the `LanguageModel` class for it, as
