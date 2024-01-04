@@ -58,6 +58,12 @@ class LanguageModel:
         """
         pass
 
+    def maximum_tokens(self) -> int:
+        """
+        Returns the maximum sequence length the language model can consume.
+        :return: An integer, representing the maximum number of tokens the language model can handle.
+        """
+
 
 class BertModel(LanguageModel):
     def __init__(self, device):
@@ -92,6 +98,9 @@ class BertModel(LanguageModel):
         mean = torch.mean(last_att_layer, dim=1)
         return mean[0]
 
+    def maximum_tokens(self) -> int:
+        return 512
+
 
 class Llama2Model(LanguageModel):
     def __init__(self, device):
@@ -125,6 +134,9 @@ class Llama2Model(LanguageModel):
         last_att_layer = output.attentions[-1]
         mean = torch.mean(last_att_layer, dim=1)
         return mean[0]
+
+    def maximum_tokens(self) -> int:
+        return 2048
 
 
 def get_model(model: str, device) -> LanguageModel:

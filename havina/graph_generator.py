@@ -1,5 +1,8 @@
 import multiprocessing
 
+import torch
+from spacy.lang.en import English
+
 import havina.entity_finding as ef
 import havina.language_model as lm
 from multiprocessing import Pool
@@ -41,7 +44,12 @@ class GraphGenerator:
         self.top_k = top_k
         self.threshold = threshold
         self.link_entity = link_entity
-        self.model = model
+        if isinstance(device, str):
+            device = torch.device(device)
+        if isinstance(model, str):
+            self.model = lm.get_model(model, device)
+        elif issubclass(model, lm.LanguageModel):
+            self.model = model(device)
         self.contiguous_token = contiguous_token
         self.forward_tokens = forward_tokens
         self.frequency = frequency
@@ -49,7 +57,7 @@ class GraphGenerator:
         self.device = device
         self.resolve_reference = resolve_reference
 
-    def __call__(self, sentence: str, workers=1) -> list[fs.HeadTailRelations]:
+    def __call__(self, text: str, workers=1) -> list[fs.HeadTailRelations]:
         """
         Processes an input sentence and returns a list of head and tails and their corresponding relations.
 
@@ -58,21 +66,31 @@ class GraphGenerator:
         :return: A list of head and tails entities and their corresponding relations
         """
 
-        model = lm.get_model(self.model, self.device)
-        processed_sentence = ef.Sentence(sentence, model, self.link_entity, self.resolve_reference)
+        if len(text) > self.model.maximum_tokens():
+            result = []
+            for sentence in split_text(text, self.model.maximum_tokens()):
+                result += self.process_sentence(sentence, workers)
+            return result
+        else:
+            return self.process_sentence(text, workers)
+
+    def process_sentence(self, sentence: str, workers) -> list[fs.HeadTailRelations]:
+        processed_sentence = ef.Sentence(sentence, self.model, self.link_entity, self.resolve_reference)
         model_input, noun_chunks = processed_sentence.prepare()
-        self.attention = model.inference_attention(model_input).to('cpu').detach()
+        attention = self.model.inference_attention(model_input).to('cpu').detach()
 
         ht_pairs = ef.create_ht_pairs(noun_chunks, processed_sentence, self.link_entity)
-        self.ind_filter = fs.IndividualFilter(processed_sentence, self.forward_tokens, self.threshold)
+        ind_filter = fs.IndividualFilter(processed_sentence, self.forward_tokens, self.threshold)
+
+        worker = WorkerClass(attention, self.top_k, self.contiguous_token, self.relation_length,
+                             self.model.num_start_tokens(), ind_filter)
 
         relations: list[fs.HeadTailRelations] = []
-        self.start_tokens = model.num_start_tokens()
         if workers <= 0:
             raise Exception('Invalid number of workers')
         elif workers == 1:
             for idx, item in enumerate(ht_pairs):
-                relations.append(self.worker(item))
+                relations.append(worker.do_work(item))
         else:
             os.environ['TOKENIZERS_PARALLELISM'] = 'true'
             try:
@@ -80,21 +98,27 @@ class GraphGenerator:
             except RuntimeError:
                 pass
             with Pool(workers) as p:
-                for item in p.imap_unordered(self.worker, ht_pairs):
+                for item in p.imap_unordered(worker.do_work, ht_pairs):
                     relations.append(item)
 
         fs.frequency_cutoff(relations, self.frequency)
 
-        # Clean up references
-        self.ind_filter = None
-        self.attention = None
-
         return clean_relations(relations)
 
-    def worker(self, pair: ef.HtPair) -> fs.HeadTailRelations:
-        candidates = ef.search_pass(self.attention, pair, self.top_k, self.contiguous_token, self.relation_length, self.start_tokens)
-        return self.ind_filter.filter(candidates, pair)
 
+class WorkerClass:
+    def __init__(self, attention, top_k, contiguous_token, relation_length, start_tokens, ind_filter):
+        self.attention = attention
+        self.top_k = top_k
+        self.contiguous_token = contiguous_token
+        self.relation_length = relation_length
+        self.start_tokens = start_tokens
+        self.ind_filter = ind_filter
+
+    def do_work(self, pair: ef.HtPair):
+        candidates = ef.search_pass(self.attention, pair, self.top_k, self.contiguous_token, self.relation_length,
+                                    self.start_tokens)
+        return self.ind_filter.filter(candidates, pair)
 
 def clean_relations(ht_pairs: list[fs.HeadTailRelations]) -> list[fs.HeadTailRelations]:
     unique_relations = set()
@@ -113,3 +137,23 @@ def clean_relations(ht_pairs: list[fs.HeadTailRelations]) -> list[fs.HeadTailRel
                  or pair.head.text != pair.tail.text)]
 
     return new_list
+
+
+def split_text(text: str, max_len: int) -> list[str]:
+    if len(text.split(' ')) < max_len:
+        return [text]
+
+    nlp_tool = English()
+    nlp_tool.add_pipe('sentencizer')
+    doc = nlp_tool(text)
+
+    result: list[str] = []
+    for item in doc.sents:
+        item_txt = str(item.text)
+        if len(result) > 0 and len(result[-1].split(' ')) + len(item_txt.split(' ')) + 1 <= max_len:
+            result[-1] += ' ' + item_txt
+        else:
+            result.append(item_txt)
+
+    return result
+
