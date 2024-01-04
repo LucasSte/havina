@@ -16,10 +16,10 @@ if __name__ == '__main__':
             "1921 by the municipality of Amsterdam, is the oldest part of the city, dating to the 9th century. The city "
             "has a long tradition of openness, liberalism, and tolerance. Cycling is key to the city's modern character,"
             " and there are numerous biking paths and lanes spread throughout the entire city.")
-    generator = GraphGenerator(device='mps', forward_tokens=True, link_entity=False, top_k=6, contiguous_token=True,
+    generator = GraphGenerator(forward_tokens=True, link_entity=False, top_k=6, contiguous_token=True,
                                relation_length=4, threshold=0.05)
 
-    relations = generator(text, 4)  # 36, 62, 61
+    relations = generator(text, 4)
 
     for item in relations:
         print(f"{item.head.text} ------ {item.tail.text}")
@@ -39,7 +39,6 @@ if __name__ == '__main__':
                 source.append(head_text)
                 target.append(tail_text)
                 relation.append(rel)
-
 
     kg_df = pd.DataFrame({'source': source, 'target': target, 'edge': relation})
     G = nx.from_pandas_edgelist(kg_df, 'source', 'target', edge_attr=True, create_using=nx.MultiGraph)
