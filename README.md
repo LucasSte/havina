@@ -114,11 +114,13 @@ The easiest way to use the library with another language model is to derive the 
 the examples in [language_model.py](havina/language_model.py).
 
 ```python
-from havina import LanguageModel
+import havina
 
-class MyModel(LanguageModel):
+class MyModel(havina.LanguageModel):
     # Implement the functions here
     pass
+
+generator = havina.GraphGenerator(model=MyModel)
 ```
 
 ## Constructor parameters
@@ -140,12 +142,4 @@ how each of them may affect the results.
 | `relation_length`   | How long the relation can be. If the number is higher, better results may arise, but the algorithm will take more time to converge.                                                                                                      | 8             |
 | `resolve_reference` | Resolve noun and pronoun references. For example, replace "he" and "she" from the triple head or tail by the noun they refer to.                                                                                                         | `True`        |
 | `device`            | PyTorch device to execute the language model. If set to `None`, the model is executed on CPU.                                                                                                                                            | `None`        |
-
-
-
-## Roadmap
-
-TODOS:
-
-1. Use spaCy sentencizer to segment large documents into sentences
 
